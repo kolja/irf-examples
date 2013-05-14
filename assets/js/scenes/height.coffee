@@ -1,12 +1,7 @@
 
-Scene = window.irf.Scene
-Sprite = window.irf.Sprite
-Map = window.irf.Map
-Camera = window.irf.Camera
+{ Scene, Sprite, Map, Camera } = @irf
 
-sceneclass = window.astr.sceneclass
-
-sceneclass["height"] = class SceneHeight extends Scene
+class SceneHeight extends Scene
   constructor: (@parent) ->
     simple = new Sprite
       "texture": "images/beach3d.png"
@@ -28,3 +23,5 @@ sceneclass["height"] = class SceneHeight extends Scene
   render: (ctx) ->
     @background.render(ctx, @camera)
 
+
+@astr.sceneclass["height"] = SceneHeight

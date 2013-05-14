@@ -1,14 +1,8 @@
-Camera = window.irf.Camera
-Scene = window.irf.Scene
-Sprite = window.irf.Sprite
-Tile = window.irf.Tile
-Map = window.irf.Map
 
-sceneclass = window.astr.sceneclass
-Hero = window.astr.Hero
-Spaceship = window.astr.Spaceship
+{ Camera, Scene, Sprite, Tile, Map } = @irf
+{ Hero, Spaceship } = @astr
 
-sceneclass["jumpnrun"] = class SceneJumpNRun extends Scene
+class SceneJumpNRun extends Scene
   constructor: (@parent) ->
     @hero = new Hero(@parent.eventManager, @parent.keyboard)
 
@@ -67,3 +61,5 @@ sceneclass["jumpnrun"] = class SceneJumpNRun extends Scene
       for spaceship in @spaceships
         spaceship.render ctx
 
+
+@astr.sceneclass["jumpnrun"] = SceneJumpNRun

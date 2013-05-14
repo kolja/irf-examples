@@ -1,8 +1,7 @@
 
-Vector = window.irf.Vector
-Sprite = window.irf.Sprite
+{ Vector, Sprite } = @irf
 
-class astr.Spaceship
+class Spaceship
   
   constructor: (@eventManager, @keyboard) ->
     @state = "normal"
@@ -47,3 +46,5 @@ class astr.Spaceship
   hello: ->
     console.log "hello!"
 
+
+@astr.Spaceship = Spaceship

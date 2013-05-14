@@ -1,12 +1,8 @@
 
-Sprite = window.irf.Sprite
-Background = window.irf.Background
-Scene = window.irf.Scene
+{ Sprite, Background, Scene } = @irf
+{ Spaceship, sceneclass }     = @astr
 
-Spaceship = window.astr.Spaceship
-sceneclass = window.astr.sceneclass
-
-sceneclass["bigbg"] = class SceneBigBackground extends Scene
+class SceneBigBackground extends Scene
 
   constructor: (@parent) ->
     backgroundsprite = new Sprite
@@ -33,3 +29,5 @@ sceneclass["bigbg"] = class SceneBigBackground extends Scene
     for spaceship in @spaceships
       spaceship.render ctx
 
+# exports:
+sceneclass["bigbg"] = SceneBigBackground

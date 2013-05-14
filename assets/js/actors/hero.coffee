@@ -1,9 +1,7 @@
 
-Sprite = window.irf.Sprite
-Vector = window.irf.Vector
-BoundingBox = window.irf.BoundingBox
+{ Sprite, Vector, BoundingBox } = @irf
 
-class astr.Hero
+class Hero
   constructor: (@eventManager, @keyboard) ->
 
     @state = "normal"
@@ -69,3 +67,4 @@ class astr.Hero
     # it will take care of the propper displacement itself.
     @bb.render ctx
 
+@astr.Hero = Hero

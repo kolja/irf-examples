@@ -1,13 +1,9 @@
 
-Scene = window.irf.Scene
-Camera = window.irf.Camera
-Sprite = window.irf.Sprite
-Map = window.irf.Map
+{ Scene, Camera, Sprite, Map } = @irf
 
-sceneclass = window.astr.sceneclass
-Spaceship = window.astr.Spaceship
+{ Spaceship } = @astr 
 
-sceneclass["maze"] = class SceneMaze extends Scene
+class SceneMaze extends Scene
   constructor: (@parent) ->
     @camera = new Camera {"projection": "normal", "vpWidth": @parent.width, "vpHeight": @parent.height}
     maze = new Sprite
@@ -52,3 +48,5 @@ sceneclass["maze"] = class SceneMaze extends Scene
     for spaceship in @spaceships
       spaceship.render ctx
 
+
+@astr.sceneclass["maze"] = SceneMaze

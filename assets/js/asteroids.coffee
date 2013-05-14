@@ -2,16 +2,13 @@
 # Main Game Controller / Root entry point
 # Adjustments you make here will affect your whole Game.
 
-window.astr ?= {}
+@astr ?= {}
 
 sceneclass = @astr.sceneclass ?= {}
 
-EventManager = window.irf.EventManager
-Keyboard = window.irf.Keyboard
-SceneManager = window.irf.SceneManager
-Game = window.irf.Game
+{ EventManager, Keyboard, SceneManager, Game } = @irf
 
-class astr.Asteroids extends Game
+class Asteroids extends Game
 
   constructor: (width, height) ->
     super width, height
@@ -33,6 +30,8 @@ class astr.Asteroids extends Game
     @ctx.fillText( @timer.fps().toFixed(1), @width - 50, 20 )
 
 jQuery ->
-  asteroids = new astr.Asteroids(800, 600)
+  asteroids = new Asteroids(800, 600)
   asteroids.start()
 
+
+# @astr.Asteroids = Asteroids

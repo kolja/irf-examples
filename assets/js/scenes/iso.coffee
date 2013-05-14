@@ -1,11 +1,7 @@
 
-Camera = window.irf.Camera
-Sprite = window.irf.Sprite
-Scene = window.irf.Scene
-Map = window.irf.Map
-sceneclass = window.astr.sceneclass
+{ Camera, Sprite, Scene, Map } = @irf
 
-sceneclass["iso"] = class SceneIso extends Scene
+class SceneIso extends Scene
   constructor: (@parent) ->
     @camera = new Camera {"projection": "iso", "vpWidth": @parent.width, "vpHeight": @parent.height}
     # @camera.coor = new Vector(2500,1050)
@@ -46,3 +42,5 @@ sceneclass["iso"] = class SceneIso extends Scene
     @camera.apply ctx, =>
       @background.render(ctx, @camera)
 
+
+@astr.sceneclass["iso"] = SceneIso
