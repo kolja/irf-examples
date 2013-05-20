@@ -24,4 +24,4 @@ class SceneHeight extends Scene
     @background.render(ctx, @camera)
 
 
-@astr.Asteroids.addScene "SceneHeight", SceneHeight
+@astr.Asteroids.addScene SceneHeight

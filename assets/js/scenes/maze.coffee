@@ -48,4 +48,4 @@ class SceneMaze extends Scene
       spaceship.render ctx
 
 
-Asteroids.addScene "SceneMaze", SceneMaze
+Asteroids.addScene SceneMaze

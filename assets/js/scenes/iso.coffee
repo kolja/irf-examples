@@ -43,4 +43,4 @@ class SceneIso extends Scene
       @background.render(ctx, @camera)
 
 
-@astr.Asteroids.addScene "SceneIso", SceneIso
+@astr.Asteroids.addScene SceneIso

@@ -62,4 +62,4 @@ class SceneJumpNRun extends Scene
         spaceship.render ctx
 
 
-Asteroids.addScene "SceneJumpNRun", SceneJumpNRun
+Asteroids.addScene SceneJumpNRun

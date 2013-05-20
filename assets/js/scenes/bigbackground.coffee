@@ -30,4 +30,4 @@ class SceneBigBackground extends Scene
       spaceship.render ctx
 
 # exports:
-Asteroids.addScene "SceneBigBackground", SceneBigBackground
+Asteroids.addScene SceneBigBackground
