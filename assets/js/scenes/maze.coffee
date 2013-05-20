@@ -1,7 +1,6 @@
 
 { Scene, Camera, Sprite, Map } = @irf
-
-{ Spaceship } = @astr 
+{ Asteroids, Spaceship } = @astr 
 
 class SceneMaze extends Scene
   constructor: (@parent) ->
@@ -49,4 +48,4 @@ class SceneMaze extends Scene
       spaceship.render ctx
 
 
-@astr.sceneclass["maze"] = SceneMaze
+Asteroids.addScene "SceneMaze", SceneMaze

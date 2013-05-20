@@ -1,6 +1,6 @@
 
 { Camera, Scene, Sprite, Tile, Map } = @irf
-{ Hero, Spaceship } = @astr
+{ Hero, Spaceship, Asteroids } = @astr
 
 class SceneJumpNRun extends Scene
   constructor: (@parent) ->
@@ -62,4 +62,4 @@ class SceneJumpNRun extends Scene
         spaceship.render ctx
 
 
-@astr.sceneclass["jumpnrun"] = SceneJumpNRun
+Asteroids.addScene "SceneJumpNRun", SceneJumpNRun

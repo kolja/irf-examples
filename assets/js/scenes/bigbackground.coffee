@@ -1,6 +1,6 @@
 
-{ Sprite, Background, Scene } = @irf
-{ Spaceship, sceneclass }     = @astr
+{ Sprite, Background, Scene, SceneManager } = @irf
+{ Asteroids, Spaceship }     = @astr
 
 class SceneBigBackground extends Scene
 
@@ -30,4 +30,4 @@ class SceneBigBackground extends Scene
       spaceship.render ctx
 
 # exports:
-sceneclass["bigbg"] = SceneBigBackground
+Asteroids.addScene "SceneBigBackground", SceneBigBackground

@@ -4,8 +4,6 @@
 
 @astr ?= {}
 
-sceneclass = @astr.sceneclass ?= {}
-
 { EventManager, Keyboard, SceneManager, Game } = @irf
 
 class Asteroids extends Game
@@ -16,9 +14,7 @@ class Asteroids extends Game
     @eventManager = new EventManager
     @keyboard = new Keyboard
 
-    #@sceneManager = new SceneManager this, ["bigbg", "jumpnrun", "iso", "maze", "height"] # Add your own Scenes or Levels
-    @sceneManager = new SceneManager(this, sceneclass)
-    @sceneManager.setScene "jumpnrun"
+    @sceneManager.setScene "SceneJumpNRun", this
 
   update: ->
     super()
@@ -34,4 +30,4 @@ jQuery ->
   asteroids.start()
 
 
-# @astr.Asteroids = Asteroids
+@astr.Asteroids = Asteroids

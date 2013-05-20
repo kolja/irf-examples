@@ -1,5 +1,5 @@
 
-{ Scene, Sprite, Map, Camera } = @irf
+{ Scene, SceneManager, Sprite, Map, Camera } = @irf
 
 class SceneHeight extends Scene
   constructor: (@parent) ->
@@ -24,4 +24,4 @@ class SceneHeight extends Scene
     @background.render(ctx, @camera)
 
 
-@astr.sceneclass["height"] = SceneHeight
+@astr.Asteroids.addScene "SceneHeight", SceneHeight
