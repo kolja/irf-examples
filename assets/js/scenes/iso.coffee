@@ -3,7 +3,7 @@
 
 class SceneIso extends Scene
   constructor: (@parent) ->
-    @camera = new Camera {"projection": "iso", "vpWidth": @parent.width, "vpHeight": @parent.height}
+    @camera = new Camera {"projection": "iso", "vpWidth": @parent.params.width, "vpHeight": @parent.params.height}
     # @camera.coor = new Vector(2500,1050)
 
     beach3d = new Sprite

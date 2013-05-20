@@ -16,7 +16,7 @@ class SceneHeight extends Scene
       "mapfile": "maps/minimap.png"
       "pattern": "simple"
       "sprite": simple
-    @camera = new Camera {"projection": "normal", "vpWidth": @parent.width, "vpHeight": @parent.height}
+    @camera = new Camera {"projection": "normal", "vpWidth": @parent.params.width, "vpHeight": @parent.params.height}
 
   update: (delta) ->
 

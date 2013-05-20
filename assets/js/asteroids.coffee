@@ -8,9 +8,8 @@
 
 class Asteroids extends Game
 
-  constructor: (width, height) ->
-    super width, height
-
+  constructor: (params) ->
+    super params 
     @eventManager = new EventManager
     @keyboard = new Keyboard
 
@@ -26,8 +25,10 @@ class Asteroids extends Game
     @ctx.fillText( @timer.fps().toFixed(1), @width - 50, 20 )
 
 jQuery ->
-  asteroids = new Asteroids(800, 600)
-  asteroids.start()
+  asteroids = new Asteroids
+    "width" : 800 
+    "height": 600
+  .start()
 
 
 @astr.Asteroids = Asteroids

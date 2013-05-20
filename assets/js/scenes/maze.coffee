@@ -4,7 +4,7 @@
 
 class SceneMaze extends Scene
   constructor: (@parent) ->
-    @camera = new Camera {"projection": "normal", "vpWidth": @parent.width, "vpHeight": @parent.height}
+    @camera = new Camera {"projection": "normal", "vpWidth": @parent.params.width, "vpHeight": @parent.params.height}
     maze = new Sprite
       "texture": "images/walls.png"
       "width": 100

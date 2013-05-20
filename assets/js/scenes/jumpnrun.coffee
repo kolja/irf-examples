@@ -6,7 +6,7 @@ class SceneJumpNRun extends Scene
   constructor: (@parent) ->
     @hero = new Hero(@parent.eventManager, @parent.keyboard)
 
-    @camera = new Camera {"projection": "normal", "vpWidth": @parent.width, "vpHeight": @parent.height}
+    @camera = new Camera {"projection": "normal", "vpWidth": @parent.params.width, "vpHeight": @parent.params.height}
     # @camera.coor = new Vector(2500,1050)
 
     jumpnrunSprite = new Sprite
