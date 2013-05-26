@@ -1,10 +1,11 @@
 
 { Scene, Camera, Sprite, Map } = @irf
-{ Asteroids, Spaceship } = @astr 
+{ Asteroids, Ufo } = @astr 
 
 class SceneMaze extends Scene
   constructor: (@parent) ->
     @camera = new Camera {"projection": "normal", "vpWidth": @parent.params.width, "vpHeight": @parent.params.height}
+    @ufo = new Ufo @parent.keyboard
     maze = new Sprite
       "texture": "images/walls.png"
       "width": 100
@@ -34,18 +35,14 @@ class SceneMaze extends Scene
       "pattern": "cross"
       "sprite": maze
 
-    @spaceships = []
-    for i in [0..3]
-      @spaceships[i] = new Spaceship(@parent.eventManager, @parent.keyboard)
-
   update: (delta) ->
-    for spaceship in @spaceships
-      spaceship.update delta
+    @ufo.update(delta, @background)
+    @camera.coor = @ufo.coor
 
   render: (ctx) ->
-    @background.render(ctx, @camera)
-    for spaceship in @spaceships
-      spaceship.render ctx
+    @camera.apply ctx, =>
+      @background.render(ctx, @camera)
+      @ufo.render(ctx)
 
 
 Asteroids.addScene SceneMaze
