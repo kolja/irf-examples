@@ -23,7 +23,10 @@ app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(app.router);
-app.use(connectAssets());
+app.use(connectAssets({
+        helperContext: app.locals,
+        buildDir: 'public'}
+));
 
 // development only
 if ('development' == app.get('env')) {
