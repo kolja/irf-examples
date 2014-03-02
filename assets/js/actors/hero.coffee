@@ -1,5 +1,5 @@
 
-{ Sprite, Vector, BoundingBox } = @irf
+{ Sprite, Vector, BoundingBox } = require 'irf'
 
 class Hero
   constructor: (@eventManager, @keyboard) ->
@@ -67,4 +67,4 @@ class Hero
     # it will take care of the propper displacement itself.
     @bb.render ctx
 
-@astr.Hero = Hero
+module.exports = Hero

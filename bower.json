@@ -1,0 +1,9 @@
+{
+  "name": "Instant Rocket Fuel Examples",
+  "private": true,
+  "version": "0.0.1",
+  "dependencies": {
+    "jquery": "~1.10.2",
+    "lodash": "~2.4.1"
+  }
+}

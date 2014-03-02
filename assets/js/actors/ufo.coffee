@@ -1,5 +1,5 @@
 
-{ Vector } = @irf
+{ Vector } = require 'irf'
 
 class Ufo
   constructor: (@keyboard) ->
@@ -24,6 +24,6 @@ class Ufo
 
     # nothing to render (this UFO is invisible)
 
-@astr.Ufo = Ufo
+module.exports = Ufo
 
 

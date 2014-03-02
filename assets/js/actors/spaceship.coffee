@@ -1,8 +1,8 @@
 
-{ Vector, Sprite } = @irf
+{ Vector, Sprite } = require 'irf'
 
 class Spaceship
-  
+
   constructor: (@eventManager, @keyboard) ->
     @state = "normal"
     @sprite = new Sprite
@@ -47,4 +47,4 @@ class Spaceship
     console.log "hello!"
 
 
-@astr.Spaceship = Spaceship
+module.exports = Spaceship
