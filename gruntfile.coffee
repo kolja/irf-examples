@@ -19,7 +19,7 @@ module.exports = (grunt) ->
                             path: 'bower_components/jquery/jquery.js',
                             exports: '$'
                         irf:
-                            path: 'bower_components/irf/irf.js',
+                            path: 'bower_components/irf/lib/irf.js',
                             exports: 'irf'
             app:
                 src: ['assets/js/app.coffee'],
