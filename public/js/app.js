@@ -20,7 +20,7 @@ Hero = (function() {
     this.coor = new Vector(100, 100);
     this.speed = new Vector(0, 0);
     this.force = new Vector(0.01, 0);
-    this.gravity = new Vector(0, 0.01);
+    this.gravity = new Vector(0, 0.03);
     this.bb = new BoundingBox(this.coor, new Vector(50, 50));
     this.bb.color = "red";
     this.eventManager.register("touchdown", this.touchdown);
@@ -31,10 +31,10 @@ Hero = (function() {
   };
 
   Hero.prototype.update = function(delta, map) {
-    var tileBelow;
-    tileBelow = map.tileAtVector(this.coor).neighbor["s"];
+    var tileBelow, _ref1, _ref2;
+    tileBelow = (_ref1 = map.tileAtVector(this.coor)) != null ? _ref1.neighbor["s"] : void 0;
     this.speed.add_(this.gravity);
-    if (this.bb.intersect(tileBelow.bb) && !(typeof tileBelow.isWalkable === "function" ? tileBelow.isWalkable() : void 0)) {
+    if (((_ref2 = this.bb) != null ? typeof _ref2.intersect === "function" ? _ref2.intersect(tileBelow != null ? tileBelow.bb : void 0) : void 0 : void 0) && !(tileBelow != null ? typeof tileBelow.isWalkable === "function" ? tileBelow.isWalkable() : void 0 : void 0)) {
       this.speed.y = 0;
       this.state = "normal";
     }
@@ -195,15 +195,16 @@ Asteroids = (function(_super) {
     this.sceneManager.setScene("SceneJumpNRun", this);
   }
 
-  Asteroids.prototype.update = function() {
-    Asteroids.__super__.update.call(this);
-    return this.sceneManager.currentScene.update(this.timer.delta);
+  Asteroids.prototype.update = function(delta) {
+    Asteroids.__super__.update.call(this, delta);
+    this.fps = (1000 / delta).toFixed(1);
+    return this.sceneManager.currentScene.update(delta);
   };
 
   Asteroids.prototype.render = function() {
     Asteroids.__super__.render.call(this);
     this.sceneManager.currentScene.render(this.ctx);
-    return this.ctx.fillText(this.timer.fps().toFixed(1), this.width - 50, 20);
+    return this.ctx.fillText(this.fps, this.params.width - 50, 20);
   };
 
   return Asteroids;

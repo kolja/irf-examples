@@ -107,6 +107,9 @@ BoundingBox = (function() {
   }
 
   BoundingBox.prototype.intersect = function(otherBB) {
+    if (otherBB == null) {
+      return false;
+    }
     return this.intersectv(otherBB) && this.intersecth(otherBB);
   };
 
@@ -173,6 +176,9 @@ BoundingBox = (function() {
   }
 
   BoundingBox.prototype.intersect = function(otherBB) {
+    if (otherBB == null) {
+      return false;
+    }
     return this.intersectv(otherBB) && this.intersecth(otherBB);
   };
 
@@ -295,14 +301,12 @@ module.exports = EventManager;
 
 
 },{}],7:[function(_dereq_,module,exports){
-var Game, Helpers, SceneManager, Timer,
+var Game, Helpers, SceneManager,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 SceneManager = _dereq_('./scenemanager.coffee');
 
 Helpers = _dereq_('./helpers.coffee');
-
-Timer = _dereq_('./timer.coffee');
 
 Game = (function() {
   Game.addScene = function(scene) {
@@ -325,27 +329,30 @@ Game = (function() {
     document.querySelector("body").appendChild(canvas);
     this.ctx = canvas.getContext('2d');
     this.ctx.font = '400 18px Helvetica, sans-serif';
-    this.loop = null;
-    this.timer = new Timer;
     this.sceneManager = this.constructor.sceneManager || new SceneManager();
   }
 
-  Game.prototype.gameloop = function() {
-    this.update();
-    return this.render();
+  Game.prototype.gameloop = function(timestamp) {
+    this.delta = timestamp - this.lasttime;
+    this.lasttime = timestamp;
+    this.update(this.delta);
+    this.render();
+    if (this.loopID) {
+      return this.loopID = requestAnimationFrame(this.gameloop);
+    }
   };
 
   Game.prototype.start = function() {
-    return this.loop = setInterval(this.gameloop, 1);
+    this.lasttime = performance.now();
+    return this.loopID = requestAnimationFrame(this.gameloop);
   };
 
   Game.prototype.stop = function() {
-    return this.loop.clearInterval();
+    cancelAnimationFrame(this.loopID);
+    return this.loopID = void 0;
   };
 
-  Game.prototype.update = function() {
-    return this.timer.punch();
-  };
+  Game.prototype.update = function(timestamp) {};
 
   Game.prototype.render = function() {
     return this.ctx.clearRect(0, 0, this.params.width, this.params.height);
@@ -358,7 +365,7 @@ Game = (function() {
 module.exports = Game;
 
 
-},{"./helpers.coffee":8,"./scenemanager.coffee":13,"./timer.coffee":17}],8:[function(_dereq_,module,exports){
+},{"./helpers.coffee":8,"./scenemanager.coffee":13}],8:[function(_dereq_,module,exports){
 var Helpers;
 
 Array.prototype.shuffle = function() {
@@ -519,6 +526,7 @@ Map = (function() {
     this.tiles = [];
     this.width = 0;
     this.height = 0;
+    this.rd = null;
     if (typeof hash["pattern"] === "function") {
       this.read = hash["pattern"];
     } else {
@@ -545,13 +553,20 @@ Map = (function() {
     _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       tile = _ref[_i];
-      if (tile.squaredDistanceTo(camera.coor) < 100000) {
+      if (tile.squaredDistanceTo(camera.coor) < this.renderDistance(camera)) {
         _results.push(tile.render(ctx));
       } else {
         _results.push(void 0);
       }
     }
     return _results;
+  };
+
+  Map.prototype.renderDistance = function(camera) {
+    if (this.rd != null) {
+      return this.rd;
+    }
+    return this.rd = (Math.pow(camera.vpWidth + 20, 2) + Math.pow(camera.vpHeight + 20, 2)) / 4;
   };
 
   Map.prototype.loadMapDataFromImage = function() {
@@ -10833,7 +10848,7 @@ Hero = (function() {
     this.coor = new Vector(100, 100);
     this.speed = new Vector(0, 0);
     this.force = new Vector(0.01, 0);
-    this.gravity = new Vector(0, 0.01);
+    this.gravity = new Vector(0, 0.03);
     this.bb = new BoundingBox(this.coor, new Vector(50, 50));
     this.bb.color = "red";
     this.eventManager.register("touchdown", this.touchdown);
@@ -10844,10 +10859,10 @@ Hero = (function() {
   };
 
   Hero.prototype.update = function(delta, map) {
-    var tileBelow;
-    tileBelow = map.tileAtVector(this.coor).neighbor["s"];
+    var tileBelow, _ref1, _ref2;
+    tileBelow = (_ref1 = map.tileAtVector(this.coor)) != null ? _ref1.neighbor["s"] : void 0;
     this.speed.add_(this.gravity);
-    if (this.bb.intersect(tileBelow.bb) && !(typeof tileBelow.isWalkable === "function" ? tileBelow.isWalkable() : void 0)) {
+    if (((_ref2 = this.bb) != null ? typeof _ref2.intersect === "function" ? _ref2.intersect(tileBelow != null ? tileBelow.bb : void 0) : void 0 : void 0) && !(tileBelow != null ? typeof tileBelow.isWalkable === "function" ? tileBelow.isWalkable() : void 0 : void 0)) {
       this.speed.y = 0;
       this.state = "normal";
     }
@@ -11008,15 +11023,16 @@ Asteroids = (function(_super) {
     this.sceneManager.setScene("SceneJumpNRun", this);
   }
 
-  Asteroids.prototype.update = function() {
-    Asteroids.__super__.update.call(this);
-    return this.sceneManager.currentScene.update(this.timer.delta);
+  Asteroids.prototype.update = function(delta) {
+    Asteroids.__super__.update.call(this, delta);
+    this.fps = (1000 / delta).toFixed(1);
+    return this.sceneManager.currentScene.update(delta);
   };
 
   Asteroids.prototype.render = function() {
     Asteroids.__super__.render.call(this);
     this.sceneManager.currentScene.render(this.ctx);
-    return this.ctx.fillText(this.timer.fps().toFixed(1), this.width - 50, 20);
+    return this.ctx.fillText(this.fps, this.params.width - 50, 20);
   };
 
   return Asteroids;

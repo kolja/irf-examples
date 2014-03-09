@@ -15,14 +15,15 @@ class Asteroids extends Game
 
         @sceneManager.setScene "SceneJumpNRun", this
 
-    update: ->
-        super()
-        @sceneManager.currentScene.update @timer.delta
+    update: (delta) ->
+        super(delta)
+        @fps = (1000/delta).toFixed(1)
+        @sceneManager.currentScene.update delta
 
     render: ->
         super()
         @sceneManager.currentScene.render @ctx
-        @ctx.fillText( @timer.fps().toFixed(1), @width - 50, 20 )
+        @ctx.fillText( @fps, @params.width - 50, 20 )
 
 
 jQuery ->
