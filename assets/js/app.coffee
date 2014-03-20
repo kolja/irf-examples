@@ -30,8 +30,9 @@ jQuery ->
     asteroids = new Asteroids
         "width" : 800
         "height": 600
-    .start()
 
+    asteroids.eventManager.on "map.finishedLoading", ->
+        asteroids.start()
 
 Asteroids.addScene require './scenes/bigbackground.coffee'
 Asteroids.addScene require './scenes/height.coffee'

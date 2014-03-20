@@ -1,94 +1,6 @@
-require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"zj4dTU":[function(require,module,exports){
+require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"PoD3pV":[function(require,module,exports){
 var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {};(function browserifyShim(module, exports, define, browserify_shim__define__module__export__) {
 !function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.irf=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
-var Animation, Shape, Timer;
-
-Shape = _dereq_('./shape.coffee');
-
-Timer = _dereq_('./timer.coffee');
-
-Animation = (function() {
-  function Animation(sprite, params) {
-    var index, _ref, _ref1, _ref2;
-    this.sprite = sprite;
-    this.fps = (_ref = params["fps"]) != null ? _ref : 30;
-    this.loop = (_ref1 = params["loop"]) != null ? _ref1 : true;
-    this.callback = (_ref2 = params["callback"]) != null ? _ref2 : null;
-    this.frames = (function() {
-      var _i, _len, _ref3, _results;
-      _ref3 = params["frames"];
-      _results = [];
-      for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
-        index = _ref3[_i];
-        _results.push(new Shape(this.sprite, index));
-      }
-      return _results;
-    }).call(this);
-    this.lastFrame = this.frames.length - 1;
-    this.timer = new Timer;
-    this.currentFrame = 0;
-    this.playing = true;
-  }
-
-  Animation.prototype.render = function(ctx) {
-    if (this.playing) {
-      this.currentFrame = Math.floor(this.timer.timeSinceLastPunch() / (1000 / this.fps));
-      if (this.currentFrame > this.lastFrame) {
-        if (typeof this.callback === "function") {
-          this.callback();
-        }
-        if (this.loop) {
-          this.rewind();
-        } else {
-          this.currentFrame = this.lastFrame;
-          this.stop();
-        }
-      }
-    }
-    return this.frames[this.currentFrame].render(ctx);
-  };
-
-  Animation.prototype.play = function() {
-    return this.playing = true;
-  };
-
-  Animation.prototype.stop = function() {
-    return this.playing = false;
-  };
-
-  Animation.prototype.rewind = function() {
-    this.currentFrame = 0;
-    return this.timer.punch();
-  };
-
-  return Animation;
-
-})();
-
-module.exports = Animation;
-
-
-},{"./shape.coffee":14,"./timer.coffee":17}],2:[function(_dereq_,module,exports){
-var Background;
-
-Background = (function() {
-  function Background(sprite) {
-    this.sprite = sprite;
-    this.sprite.addImage("background", 0);
-  }
-
-  Background.prototype.render = function(ctx) {
-    return this.sprite.render("background", ctx);
-  };
-
-  return Background;
-
-})();
-
-module.exports = Background;
-
-
-},{}],3:[function(_dereq_,module,exports){
 var BoundingBox, Vector;
 
 Vector = _dereq_('./vector.coffee');
@@ -157,7 +69,7 @@ BoundingBox = (function() {
 module.exports = BoundingBox;
 
 
-},{"./vector.coffee":18}],4:[function(_dereq_,module,exports){
+},{"./vector.coffee":21}],2:[function(_dereq_,module,exports){
 var BoundingBox, Vector;
 
 Vector = _dereq_('./vector.coffee');
@@ -226,7 +138,7 @@ BoundingBox = (function() {
 module.exports = BoundingBox;
 
 
-},{"./vector.coffee":18}],5:[function(_dereq_,module,exports){
+},{"./vector.coffee":21}],3:[function(_dereq_,module,exports){
 var Camera, Vector;
 
 Vector = _dereq_('./vector.coffee');
@@ -254,7 +166,7 @@ Camera = (function() {
         ctx.save();
         ctx.scale(1, 0.5);
         ctx.rotate(Math.PI / 4);
-        ctx.translate(200, -400);
+        ctx.translate(this.vpWidth / 2 - this.coor.x, this.vpHeight / 2 - this.coor.y);
         callback();
         return ctx.restore();
     }
@@ -267,12 +179,13 @@ Camera = (function() {
 module.exports = Camera;
 
 
-},{"./vector.coffee":18}],6:[function(_dereq_,module,exports){
+},{"./vector.coffee":21}],4:[function(_dereq_,module,exports){
 var EventManager;
 
 EventManager = (function() {
   function EventManager() {
     this.eventlist = {};
+    this.on = this.register;
   }
 
   EventManager.prototype.register = function(event, callback) {
@@ -300,7 +213,7 @@ EventManager = (function() {
 module.exports = EventManager;
 
 
-},{}],7:[function(_dereq_,module,exports){
+},{}],5:[function(_dereq_,module,exports){
 var Game, Helpers, SceneManager,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -365,7 +278,7 @@ Game = (function() {
 module.exports = Game;
 
 
-},{"./helpers.coffee":8,"./scenemanager.coffee":13}],8:[function(_dereq_,module,exports){
+},{"./helpers.coffee":6,"./scenemanager.coffee":15}],6:[function(_dereq_,module,exports){
 var Helpers;
 
 Array.prototype.shuffle = function() {
@@ -405,28 +318,28 @@ Helpers = (function() {
 module.exports = Helpers;
 
 
-},{}],9:[function(_dereq_,module,exports){
+},{}],7:[function(_dereq_,module,exports){
 module.exports = {
-  Animation: _dereq_('./animation.coffee'),
-  Background: _dereq_('./background.coffee'),
+  Animation: _dereq_('./sprite/animation.coffee'),
+  Background: _dereq_('./sprite/background.coffee'),
   BoundingBox: _dereq_('./boundingbox.coffee'),
   Camera: _dereq_('./camera.coffee'),
   EventManager: _dereq_('./eventmanager.coffee'),
   Game: _dereq_('./game.coffee'),
   Helpers: _dereq_('./helpers.coffee'),
   Keyboard: _dereq_('./keyboard.coffee'),
-  Map: _dereq_('./map.coffee'),
+  Map: _dereq_('./map/map.coffee'),
   Scene: _dereq_('./scene.coffee'),
   SceneManager: _dereq_('./scenemanager.coffee'),
-  Shape: _dereq_('./shape.coffee'),
-  Sprite: _dereq_('./sprite.coffee'),
-  Tile: _dereq_('./tile.coffee'),
+  Shape: _dereq_('./sprite/shape.coffee'),
+  Sprite: _dereq_('./sprite/sprite.coffee'),
+  Tile: _dereq_('./map/tile.coffee'),
   Timer: _dereq_('./timer.coffee'),
   Vector: _dereq_('./vector.coffee')
 };
 
 
-},{"./animation.coffee":1,"./background.coffee":2,"./boundingbox.coffee":4,"./camera.coffee":5,"./eventmanager.coffee":6,"./game.coffee":7,"./helpers.coffee":8,"./keyboard.coffee":10,"./map.coffee":11,"./scene.coffee":12,"./scenemanager.coffee":13,"./shape.coffee":14,"./sprite.coffee":15,"./tile.coffee":16,"./timer.coffee":17,"./vector.coffee":18}],10:[function(_dereq_,module,exports){
+},{"./boundingbox.coffee":2,"./camera.coffee":3,"./eventmanager.coffee":4,"./game.coffee":5,"./helpers.coffee":6,"./keyboard.coffee":8,"./map/map.coffee":10,"./map/tile.coffee":13,"./scene.coffee":14,"./scenemanager.coffee":15,"./sprite/animation.coffee":16,"./sprite/background.coffee":17,"./sprite/shape.coffee":18,"./sprite/sprite.coffee":19,"./timer.coffee":20,"./vector.coffee":21}],8:[function(_dereq_,module,exports){
 var Keyboard;
 
 Keyboard = (function() {
@@ -515,37 +428,132 @@ Keyboard = (function() {
 module.exports = Keyboard;
 
 
-},{}],11:[function(_dereq_,module,exports){
-var Map, Tile;
+},{}],9:[function(_dereq_,module,exports){
+var DataSource;
 
-Tile = _dereq_('./tile.coffee');
+DataSource = (function() {
+  function DataSource(_arg) {
+    var read;
+    read = _arg.read, this.file = _arg.file, this.callback = _arg.callback;
+    this.mapData = {};
+    if (typeof read === "function") {
+      this.read = read;
+    }
+    switch (read) {
+      case "image":
+        this.read = this.readImage;
+        break;
+      case "file":
+        this.read = this.readFile;
+        break;
+      default:
+        this.read = this.readLiteral;
+    }
+  }
+
+  DataSource.prototype.readImage = function() {
+    var img,
+      _this = this;
+    img = new Image();
+    img.src = this.file;
+    return img.onload = function() {
+      var canvas, ctx, data, i, p, row, _base, _i, _len;
+      canvas = document.createElement("canvas");
+      _this.mapData.width = canvas.width = img.width;
+      _this.mapData.height = canvas.height = img.height;
+      ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+      data = ctx.getImageData(0, 0, _this.mapData.width, _this.mapData.height).data;
+      for (i = _i = 0, _len = data.length; _i < _len; i = _i += 4) {
+        p = data[i];
+        row = Math.floor((i / 4) / _this.mapData.width);
+        if ((_base = _this.mapData)[row] == null) {
+          _base[row] = [];
+        }
+        _this.mapData[row].push([Number(data[i]).toHex(), Number(data[i + 1]).toHex(), Number(data[i + 2]).toHex(), Number(data[i + 3]).toHex()]);
+      }
+      return _this.callback(_this.mapData);
+    };
+  };
+
+  DataSource.prototype.readFile = function() {
+    var request;
+    request = new XMLHttpRequest();
+    request.onload = function() {
+      this.mapData = JSON.parse(request.responseText);
+      return this.callback(this.mapdata);
+    };
+    request.open("GET", this.file, true);
+    return request.send();
+  };
+
+  DataSource.prototype.readLiteral = function() {
+    this.mapData = this.file;
+    return this.callback(this.mapData);
+  };
+
+  return DataSource;
+
+})();
+
+module.exports = DataSource;
+
+
+},{}],10:[function(_dereq_,module,exports){
+var DataSource, Map, MovementRules, ReadStrategy,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+DataSource = _dereq_('./datasource.coffee');
+
+ReadStrategy = _dereq_('./readstrategy.coffee');
+
+MovementRules = _dereq_('./movementrules.coffee');
 
 Map = (function() {
-  function Map(hash) {
-    this.sprite = hash["sprite"];
-    this.tiles = [];
+  function Map(_arg) {
+    this.sprite = _arg.sprite, this.read = _arg.read, this.pattern = _arg.pattern, this.movement = _arg.movement, this.mapFile = _arg.mapFile, this.ed = _arg.ed;
+    this.parseToTiles = __bind(this.parseToTiles, this);
+    if (this.read == null) {
+      this.read = "image";
+    }
+    if (this.pattern == null) {
+      this.pattern = "simple";
+    }
+    if (this.movement == null) {
+      this.movement = "northSouthEastWest";
+    }
     this.width = 0;
     this.height = 0;
     this.rd = null;
-    if (typeof hash["pattern"] === "function") {
-      this.read = hash["pattern"];
-    } else {
-      switch (hash["pattern"]) {
-        case "simple":
-          this.read = this.readSimple;
-          break;
-        case "square":
-          this.read = this.readSquare;
-          break;
-        case "cross":
-          this.read = this.readCross;
-      }
-    }
-    this.map = new Image();
-    this.map.src = hash["mapfile"];
-    this.mapData = [];
-    this.loadMapDataFromImage();
+    new DataSource({
+      read: this.read,
+      file: this.mapFile,
+      callback: this.parseToTiles
+    }).read();
   }
+
+  Map.prototype.parseToTiles = function(mapData) {
+    var _ref;
+    this.width = mapData.width, this.height = mapData.height;
+    this.tiles = (new ReadStrategy(this.pattern)).read(mapData, this.sprite);
+    (new MovementRules(this.movement)).applyRules(this);
+    return (_ref = this.ed) != null ? _ref.trigger("map.finishedLoading") : void 0;
+  };
+
+  Map.prototype.renderDistance = function(camera) {
+    if (this.rd != null) {
+      return this.rd;
+    }
+    return this.rd = (Math.pow(camera.vpWidth + 20, 2) + Math.pow(camera.vpHeight + 20, 2)) / 4;
+  };
+
+  Map.prototype.tileAtVector = function(vec) {
+    var index, x, y;
+    x = Math.floor(vec.x / this.sprite.innerWidth);
+    y = Math.floor(vec.y / this.sprite.innerHeight);
+    index = y * this.width + x;
+    return this.tiles[index];
+  };
 
   Map.prototype.render = function(ctx, camera) {
     var tile, _i, _len, _ref, _results;
@@ -562,116 +570,6 @@ Map = (function() {
     return _results;
   };
 
-  Map.prototype.renderDistance = function(camera) {
-    if (this.rd != null) {
-      return this.rd;
-    }
-    return this.rd = (Math.pow(camera.vpWidth + 20, 2) + Math.pow(camera.vpHeight + 20, 2)) / 4;
-  };
-
-  Map.prototype.loadMapDataFromImage = function() {
-    var _this = this;
-    return $(this.map).load(function() {
-      var canvas, ctx, data, i, index, p, row, tile, _base, _i, _j, _len, _len1, _ref, _results;
-      canvas = document.createElement("canvas");
-      _this.width = _this.map.width;
-      _this.height = _this.map.height;
-      canvas.width = _this.map.width;
-      canvas.height = _this.map.height;
-      ctx = canvas.getContext("2d");
-      ctx.drawImage(_this.map, 0, 0);
-      data = ctx.getImageData(0, 0, _this.map.width, _this.map.height).data;
-      for (i = _i = 0, _len = data.length; _i < _len; i = _i += 4) {
-        p = data[i];
-        row = Math.floor((i / 4) / _this.map.width);
-        if ((_base = _this.mapData)[row] == null) {
-          _base[row] = [];
-        }
-        _this.mapData[row].push([Number(data[i]).toHex(), Number(data[i + 1]).toHex(), Number(data[i + 2]).toHex(), Number(data[i + 3]).toHex()]);
-      }
-      _this.read();
-      _ref = _this.tiles;
-      _results = [];
-      for (index = _j = 0, _len1 = _ref.length; _j < _len1; index = ++_j) {
-        tile = _ref[index];
-        tile.neighbor["w"] = _this.tiles[index - 1];
-        tile.neighbor["e"] = _this.tiles[index + 1];
-        tile.neighbor["n"] = _this.tiles[index - _this.width];
-        _results.push(tile.neighbor["s"] = _this.tiles[index + _this.width]);
-      }
-      return _results;
-    });
-  };
-
-  Map.prototype.readSimple = function() {
-    var col, green, row, type, z, _i, _ref, _results;
-    _results = [];
-    for (row = _i = 0, _ref = this.map.height - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; row = 0 <= _ref ? ++_i : --_i) {
-      _results.push((function() {
-        var _j, _ref1, _results1;
-        _results1 = [];
-        for (col = _j = 0, _ref1 = this.map.width - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; col = 0 <= _ref1 ? ++_j : --_j) {
-          type = "" + this.mapData[row][col][0];
-          green = parseInt(this.mapData[row][col][1], 16);
-          z = parseInt(this.mapData[row][col][2], 16);
-          _results1.push(this.tiles.push(new Tile(this.sprite, type, row, col, green, z)));
-        }
-        return _results1;
-      }).call(this));
-    }
-    return _results;
-  };
-
-  Map.prototype.readSquare = function() {
-    var col, green, row, type, z, _i, _ref, _results;
-    _results = [];
-    for (row = _i = 0, _ref = this.map.height - 2; 0 <= _ref ? _i <= _ref : _i >= _ref; row = 0 <= _ref ? ++_i : --_i) {
-      _results.push((function() {
-        var _j, _ref1, _results1;
-        _results1 = [];
-        for (col = _j = 0, _ref1 = this.map.width - 2; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; col = 0 <= _ref1 ? ++_j : --_j) {
-          type = "" + this.mapData[row][col][0] + this.mapData[row][col + 1][0] + this.mapData[row + 1][col][0] + this.mapData[row + 1][col + 1][0];
-          green = parseInt(this.mapData[row][col][1], 16);
-          z = parseInt(this.mapData[row][col][2], 16);
-          _results1.push(this.tiles.push(new Tile(this.sprite, type, row, col, green, z)));
-        }
-        return _results1;
-      }).call(this));
-    }
-    return _results;
-  };
-
-  Map.prototype.readCross = function() {
-    var col, green, row, type, z, _i, _ref, _results;
-    _results = [];
-    for (row = _i = 1, _ref = this.map.height - 2; _i <= _ref; row = _i += 2) {
-      _results.push((function() {
-        var _j, _ref1, _results1;
-        _results1 = [];
-        for (col = _j = 1, _ref1 = this.map.width - 2; _j <= _ref1; col = _j += 2) {
-          if (this.mapData[row][col][0] !== "00") {
-            type = "" + this.mapData[row - 1][col][0] + this.mapData[row][col + 1][0] + this.mapData[row + 1][col][0] + this.mapData[row][col - 1][0];
-            green = parseInt(this.mapData[row][col][1], 16);
-            z = parseInt(this.mapData[row][col][2], 16);
-            _results1.push(this.tiles.push(new Tile(this.sprite, type, row / 2, col / 2, green, z)));
-          } else {
-            _results1.push(void 0);
-          }
-        }
-        return _results1;
-      }).call(this));
-    }
-    return _results;
-  };
-
-  Map.prototype.tileAtVector = function(vec) {
-    var index, x, y;
-    x = Math.floor(vec.x / this.sprite.innerWidth);
-    y = Math.floor(vec.y / this.sprite.innerHeight);
-    index = y * this.width + x;
-    return this.tiles[index];
-  };
-
   return Map;
 
 })();
@@ -679,7 +577,169 @@ Map = (function() {
 module.exports = Map;
 
 
-},{"./tile.coffee":16}],12:[function(_dereq_,module,exports){
+},{"./datasource.coffee":9,"./movementrules.coffee":11,"./readstrategy.coffee":12}],11:[function(_dereq_,module,exports){
+var MovementRules;
+
+MovementRules = (function() {
+  function MovementRules(rules) {
+    if (typeof rules === "function") {
+      this.rules = rules;
+    }
+    switch (rules) {
+      case "hexagon":
+        this.rules = this.hexagon;
+        break;
+      default:
+        this.rules = this.northSouthEastWest;
+    }
+  }
+
+  MovementRules.prototype.applyRules = function(map) {
+    return this.rules(map);
+  };
+
+  MovementRules.prototype.northSouthEastWest = function(map) {
+    var index, tile, _i, _len, _ref, _results;
+    _ref = map.tiles;
+    _results = [];
+    for (index = _i = 0, _len = _ref.length; _i < _len; index = ++_i) {
+      tile = _ref[index];
+      tile.neighbor["w"] = map.tiles[index - 1];
+      tile.neighbor["e"] = map.tiles[index + 1];
+      tile.neighbor["n"] = map.tiles[index - map.width];
+      _results.push(tile.neighbor["s"] = map.tiles[index + map.width]);
+    }
+    return _results;
+  };
+
+  MovementRules.prototype.hexagon = function(map) {};
+
+  return MovementRules;
+
+})();
+
+module.exports = MovementRules;
+
+
+},{}],12:[function(_dereq_,module,exports){
+var ReadStrategy, Tile;
+
+Tile = _dereq_("./tile.coffee");
+
+ReadStrategy = (function() {
+  function ReadStrategy(pattern) {
+    this.pattern = pattern;
+    if (typeof this.pattern === "function") {
+      this.read = this.pattern;
+    } else {
+      switch (this.pattern) {
+        case "square":
+          this.read = this.readSquare;
+          break;
+        case "cross":
+          this.read = this.readCross;
+          break;
+        default:
+          this.read = this.readSimple;
+      }
+    }
+  }
+
+  ReadStrategy.prototype.readSimple = function(mapData, sprite) {
+    var col, green, row, tiles, type, z, _i, _j, _ref, _ref1;
+    tiles = [];
+    for (row = _i = 0, _ref = mapData.height - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; row = 0 <= _ref ? ++_i : --_i) {
+      for (col = _j = 0, _ref1 = mapData.width - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; col = 0 <= _ref1 ? ++_j : --_j) {
+        type = "" + mapData[row][col][0];
+        green = parseInt(mapData[row][col][1], 16);
+        z = parseInt(mapData[row][col][2], 16);
+        tiles.push(new Tile(sprite, type, row, col, green, z));
+      }
+    }
+    return tiles;
+  };
+
+  ReadStrategy.prototype.readSquare = function(mapData, sprite) {
+    var col, green, row, tiles, type, z, _i, _j, _ref, _ref1;
+    tiles = [];
+    for (row = _i = 0, _ref = mapData.height - 2; 0 <= _ref ? _i <= _ref : _i >= _ref; row = 0 <= _ref ? ++_i : --_i) {
+      for (col = _j = 0, _ref1 = mapData.width - 2; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; col = 0 <= _ref1 ? ++_j : --_j) {
+        type = "" + mapData[row][col][0] + mapData[row][col + 1][0] + mapData[row + 1][col][0] + mapData[row + 1][col + 1][0];
+        green = parseInt(mapData[row][col][1], 16);
+        z = parseInt(mapData[row][col][2], 16);
+        tiles.push(new Tile(sprite, type, row, col, green, z));
+      }
+    }
+    return tiles;
+  };
+
+  ReadStrategy.prototype.readCross = function(mapData, sprite) {
+    var col, green, row, tiles, type, z, _i, _j, _ref, _ref1;
+    tiles = [];
+    for (row = _i = 1, _ref = mapData.height - 2; _i <= _ref; row = _i += 2) {
+      for (col = _j = 1, _ref1 = mapData.width - 2; _j <= _ref1; col = _j += 2) {
+        if (mapData[row][col][0] !== "00") {
+          type = "" + mapData[row - 1][col][0] + mapData[row][col + 1][0] + mapData[row + 1][col][0] + mapData[row][col - 1][0];
+          green = parseInt(mapData[row][col][1], 16);
+          z = parseInt(mapData[row][col][2], 16);
+          tiles.push(new Tile(sprite, type, row / 2, col / 2, green, z));
+        }
+      }
+    }
+    return tiles;
+  };
+
+  return ReadStrategy;
+
+})();
+
+module.exports = ReadStrategy;
+
+
+},{"./tile.coffee":13}],13:[function(_dereq_,module,exports){
+var BoundingBox, Tile, Vector;
+
+BoundingBox = _dereq_('../boundingBox.coffee');
+
+Vector = _dereq_('../vector.coffee');
+
+Tile = (function() {
+  function Tile(sprite, type, row, col, green, z) {
+    this.sprite = sprite;
+    this.type = type;
+    this.row = row;
+    this.col = col;
+    this.green = green != null ? green : 0;
+    this.z = z != null ? z : 0;
+    this.neighbor = [];
+    this.x = this.col * this.sprite.innerWidth + this.sprite.innerWidth / 2;
+    this.y = this.row * this.sprite.innerHeight + this.sprite.innerHeight / 2;
+    this.bb = new BoundingBox(new Vector(this.x, this.y), new Vector(this.sprite.innerWidth, this.sprite.innerHeight));
+  }
+
+  Tile.prototype.isWalkable = function() {
+    return this.green === 0;
+  };
+
+  Tile.prototype.squaredDistanceTo = function(vec) {
+    return vec.subtract(new Vector(this.x, this.y)).lengthSquared();
+  };
+
+  Tile.prototype.render = function(ctx) {
+    ctx.save();
+    ctx.translate(this.x - this.z, this.y - this.z);
+    this.sprite.render(this.type, ctx);
+    return ctx.restore();
+  };
+
+  return Tile;
+
+})();
+
+module.exports = Tile;
+
+
+},{"../boundingBox.coffee":1,"../vector.coffee":21}],14:[function(_dereq_,module,exports){
 var Scene;
 
 Scene = (function() {
@@ -696,7 +756,7 @@ Scene = (function() {
 module.exports = Scene;
 
 
-},{}],13:[function(_dereq_,module,exports){
+},{}],15:[function(_dereq_,module,exports){
 var SceneManager;
 
 SceneManager = (function() {
@@ -724,7 +784,95 @@ SceneManager = (function() {
 module.exports = SceneManager;
 
 
-},{}],14:[function(_dereq_,module,exports){
+},{}],16:[function(_dereq_,module,exports){
+var Animation, Shape, Timer;
+
+Shape = _dereq_('./shape.coffee');
+
+Timer = _dereq_('../timer.coffee');
+
+Animation = (function() {
+  function Animation(sprite, params) {
+    var index, _ref, _ref1, _ref2;
+    this.sprite = sprite;
+    this.fps = (_ref = params["fps"]) != null ? _ref : 30;
+    this.loop = (_ref1 = params["loop"]) != null ? _ref1 : true;
+    this.callback = (_ref2 = params["callback"]) != null ? _ref2 : null;
+    this.frames = (function() {
+      var _i, _len, _ref3, _results;
+      _ref3 = params["frames"];
+      _results = [];
+      for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
+        index = _ref3[_i];
+        _results.push(new Shape(this.sprite, index));
+      }
+      return _results;
+    }).call(this);
+    this.lastFrame = this.frames.length - 1;
+    this.timer = new Timer;
+    this.currentFrame = 0;
+    this.playing = true;
+  }
+
+  Animation.prototype.render = function(ctx) {
+    if (this.playing) {
+      this.currentFrame = Math.floor(this.timer.timeSinceLastPunch() / (1000 / this.fps));
+      if (this.currentFrame > this.lastFrame) {
+        if (typeof this.callback === "function") {
+          this.callback();
+        }
+        if (this.loop) {
+          this.rewind();
+        } else {
+          this.currentFrame = this.lastFrame;
+          this.stop();
+        }
+      }
+    }
+    return this.frames[this.currentFrame].render(ctx);
+  };
+
+  Animation.prototype.play = function() {
+    return this.playing = true;
+  };
+
+  Animation.prototype.stop = function() {
+    return this.playing = false;
+  };
+
+  Animation.prototype.rewind = function() {
+    this.currentFrame = 0;
+    return this.timer.punch();
+  };
+
+  return Animation;
+
+})();
+
+module.exports = Animation;
+
+
+},{"../timer.coffee":20,"./shape.coffee":18}],17:[function(_dereq_,module,exports){
+var Background;
+
+Background = (function() {
+  function Background(sprite) {
+    this.sprite = sprite;
+    this.sprite.addImage("background", 0);
+  }
+
+  Background.prototype.render = function(ctx) {
+    return this.sprite.render("background", ctx);
+  };
+
+  return Background;
+
+})();
+
+module.exports = Background;
+
+
+},{}],18:[function(_dereq_,module,exports){
 var Shape;
 
 Shape = (function() {
@@ -748,7 +896,7 @@ Shape = (function() {
 module.exports = Shape;
 
 
-},{}],15:[function(_dereq_,module,exports){
+},{}],19:[function(_dereq_,module,exports){
 var Animation, Shape, Sprite;
 
 Shape = _dereq_('./shape.coffee');
@@ -802,51 +950,7 @@ Sprite = (function() {
 module.exports = Sprite;
 
 
-},{"./animation.coffee":1,"./shape.coffee":14}],16:[function(_dereq_,module,exports){
-var BoundingBox, Tile, Vector;
-
-BoundingBox = _dereq_('./boundingBox.coffee');
-
-Vector = _dereq_('./vector.coffee');
-
-Tile = (function() {
-  function Tile(sprite, type, row, col, green, z) {
-    this.sprite = sprite;
-    this.type = type;
-    this.row = row;
-    this.col = col;
-    this.green = green != null ? green : 0;
-    this.z = z != null ? z : 0;
-    this.neighbor = [];
-    this.x = this.col * this.sprite.innerWidth + this.sprite.innerWidth / 2;
-    this.y = this.row * this.sprite.innerHeight + this.sprite.innerHeight / 2;
-    this.bb = new BoundingBox(new Vector(this.x, this.y), new Vector(this.sprite.innerWidth, this.sprite.innerHeight));
-    this.bb.color = "green";
-  }
-
-  Tile.prototype.isWalkable = function() {
-    return this.green === 0;
-  };
-
-  Tile.prototype.squaredDistanceTo = function(vec) {
-    return vec.subtract(new Vector(this.x, this.y)).lengthSquared();
-  };
-
-  Tile.prototype.render = function(ctx) {
-    ctx.save();
-    ctx.translate(this.x - this.z, this.y - this.z);
-    this.sprite.render(this.type, ctx);
-    return ctx.restore();
-  };
-
-  return Tile;
-
-})();
-
-module.exports = Tile;
-
-
-},{"./boundingBox.coffee":3,"./vector.coffee":18}],17:[function(_dereq_,module,exports){
+},{"./animation.coffee":16,"./shape.coffee":18}],20:[function(_dereq_,module,exports){
 var Timer;
 
 Timer = (function() {
@@ -880,7 +984,7 @@ Timer = (function() {
 module.exports = Timer;
 
 
-},{}],18:[function(_dereq_,module,exports){
+},{}],21:[function(_dereq_,module,exports){
 var Vector;
 
 Vector = (function() {
@@ -1017,9 +1121,9 @@ Vector = (function() {
 module.exports = Vector;
 
 
-},{}]},{},[9])
+},{}]},{},[7])
 
-(9)
+(7)
 });
 
 ; browserify_shim__define__module__export__(typeof irf != "undefined" ? irf : window.irf);
@@ -1027,8 +1131,8 @@ module.exports = Vector;
 }).call(global, undefined, undefined, undefined, function defineExport(ex) { module.exports = ex; });
 
 },{}],"irf":[function(require,module,exports){
-module.exports=require('zj4dTU');
-},{}],"zfQ4Bt":[function(require,module,exports){
+module.exports=require('PoD3pV');
+},{}],"ic9x9N":[function(require,module,exports){
 var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {};(function browserifyShim(module, exports, define, browserify_shim__define__module__export__) {
 /*!
  * jQuery JavaScript Library v1.10.2
@@ -10825,5 +10929,5 @@ if ( typeof module === "object" && module && typeof module.exports === "object" 
 }).call(global, undefined, undefined, undefined, function defineExport(ex) { module.exports = ex; });
 
 },{}],"jquery":[function(require,module,exports){
-module.exports=require('zfQ4Bt');
+module.exports=require('ic9x9N');
 },{}]},{},[])

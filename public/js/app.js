@@ -26,15 +26,13 @@ Hero = (function() {
     this.eventManager.register("touchdown", this.touchdown);
   }
 
-  Hero.prototype.touchdown = function() {
-    return console.log("Hero says: Touchdown occurred");
-  };
+  Hero.prototype.touchdown = function() {};
 
   Hero.prototype.update = function(delta, map) {
-    var tileBelow, _ref1, _ref2;
+    var tileBelow, _ref1;
     tileBelow = (_ref1 = map.tileAtVector(this.coor)) != null ? _ref1.neighbor["s"] : void 0;
     this.speed.add_(this.gravity);
-    if (((_ref2 = this.bb) != null ? typeof _ref2.intersect === "function" ? _ref2.intersect(tileBelow != null ? tileBelow.bb : void 0) : void 0 : void 0) && !(tileBelow != null ? typeof tileBelow.isWalkable === "function" ? tileBelow.isWalkable() : void 0 : void 0)) {
+    if (this.bb.intersect(tileBelow != null ? tileBelow.bb : void 0) && !(tileBelow != null ? tileBelow.isWalkable() : void 0)) {
       this.speed.y = 0;
       this.state = "normal";
     }
@@ -155,7 +153,7 @@ Ufo = (function() {
     this.force.down = new Vector(0, 0.01);
   }
 
-  Ufo.prototype.update = function(delta, map) {
+  Ufo.prototype.update = function(delta) {
     var direction, _i, _len, _ref;
     _ref = ['right', 'left', 'up', 'down'];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -213,10 +211,13 @@ Asteroids = (function(_super) {
 
 jQuery(function() {
   var asteroids;
-  return asteroids = new Asteroids({
+  asteroids = new Asteroids({
     "width": 800,
     "height": 600
-  }).start();
+  });
+  return asteroids.eventManager.on("map.finishedLoading", function() {
+    return asteroids.start();
+  });
 });
 
 Asteroids.addScene(require('./scenes/bigbackground.coffee'));
@@ -315,9 +316,10 @@ SceneHeight = (function(_super) {
       }
     });
     this.background = new Map({
-      "mapfile": "maps/minimap.png",
+      "mapFile": "maps/minimap.png",
       "pattern": "simple",
-      "sprite": simple
+      "sprite": simple,
+      "ed": this.parent.eventManager
     });
     this.camera = new Camera({
       "projection": "normal",
@@ -340,11 +342,13 @@ module.exports = SceneHeight;
 
 
 },{}],7:[function(require,module,exports){
-var Camera, Map, Scene, SceneIso, Sprite, _ref,
+var Camera, Map, Scene, SceneIso, Sprite, Ufo, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 _ref = require('irf'), Camera = _ref.Camera, Sprite = _ref.Sprite, Scene = _ref.Scene, Map = _ref.Map;
+
+Ufo = require('../actors/ufo.coffee');
 
 SceneIso = (function(_super) {
   __extends(SceneIso, _super);
@@ -357,6 +361,7 @@ SceneIso = (function(_super) {
       "vpWidth": this.parent.params.width,
       "vpHeight": this.parent.params.height
     });
+    this.ufo = new Ufo(this.parent.keyboard);
     beach3d = new Sprite({
       "texture": "images/beach3d.png",
       "width": 107,
@@ -383,18 +388,23 @@ SceneIso = (function(_super) {
       }
     });
     this.background = new Map({
-      "mapfile": "maps/map.png",
+      "mapFile": "maps/map.png",
       "pattern": "square",
-      "sprite": beach3d
+      "sprite": beach3d,
+      "ed": this.parent.eventManager
     });
   }
 
-  SceneIso.prototype.update = function(delta) {};
+  SceneIso.prototype.update = function(delta) {
+    this.ufo.update(delta, this.background);
+    return this.camera.coor = this.ufo.coor;
+  };
 
   SceneIso.prototype.render = function(ctx) {
     var _this = this;
     return this.camera.apply(ctx, function() {
-      return _this.background.render(ctx, _this.camera);
+      _this.background.render(ctx, _this.camera);
+      return _this.ufo.render(ctx);
     });
   };
 
@@ -405,7 +415,7 @@ SceneIso = (function(_super) {
 module.exports = SceneIso;
 
 
-},{}],8:[function(require,module,exports){
+},{"../actors/ufo.coffee":3}],8:[function(require,module,exports){
 var Camera, Hero, Map, Scene, SceneJumpNRun, Spaceship, Sprite, Tile, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -449,28 +459,24 @@ SceneJumpNRun = (function(_super) {
         "bb": 11
       }
     });
-    customReadFunction = function() {
-      var col, green, row, type, z, _i, _ref1, _results;
-      _results = [];
-      for (row = _i = 0, _ref1 = this.map.height - 1; 0 <= _ref1 ? _i <= _ref1 : _i >= _ref1; row = 0 <= _ref1 ? ++_i : --_i) {
-        _results.push((function() {
-          var _j, _ref2, _results1;
-          _results1 = [];
-          for (col = _j = 0, _ref2 = this.map.width - 1; 0 <= _ref2 ? _j <= _ref2 : _j >= _ref2; col = 0 <= _ref2 ? ++_j : --_j) {
-            type = "" + this.mapData[row][col][0];
-            green = parseInt(this.mapData[row][col][1], 16);
-            z = parseInt(this.mapData[row][col][2], 16);
-            _results1.push(this.tiles.push(new Tile(this.sprite, type, row, col, green, z)));
-          }
-          return _results1;
-        }).call(this));
+    customReadFunction = function(mapData, sprite) {
+      var col, green, row, tiles, type, z, _i, _j, _ref1, _ref2;
+      tiles = [];
+      for (row = _i = 0, _ref1 = mapData.height - 1; 0 <= _ref1 ? _i <= _ref1 : _i >= _ref1; row = 0 <= _ref1 ? ++_i : --_i) {
+        for (col = _j = 0, _ref2 = mapData.width - 1; 0 <= _ref2 ? _j <= _ref2 : _j >= _ref2; col = 0 <= _ref2 ? ++_j : --_j) {
+          type = "" + mapData[row][col][0];
+          green = parseInt(mapData[row][col][1], 16);
+          z = parseInt(mapData[row][col][2], 16);
+          tiles.push(new Tile(sprite, type, row, col, green, z));
+        }
       }
-      return _results;
+      return tiles;
     };
     this.background = new Map({
-      "mapfile": "/maps/jumpnrun_map.png",
+      "mapFile": "/maps/jumpnrun_map.png",
       "pattern": customReadFunction,
-      "sprite": jumpnrunSprite
+      "sprite": jumpnrunSprite,
+      "ed": this.parent.eventManager
     });
     this.spaceships = [];
     for (i = _i = 0; _i <= 3; i = ++_i) {
@@ -561,9 +567,10 @@ SceneMaze = (function(_super) {
       }
     });
     this.background = new Map({
-      "mapfile": "maps/maze.png",
+      "mapFile": "maps/maze.png",
       "pattern": "cross",
-      "sprite": maze
+      "sprite": maze,
+      "ed": this.parent.eventManager
     });
   }
 

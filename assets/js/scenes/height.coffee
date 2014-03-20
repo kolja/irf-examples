@@ -14,9 +14,10 @@ class SceneHeight extends Scene
                 "00": 12
                 "dd": 12
         @background = new Map
-            "mapfile": "maps/minimap.png"
+            "mapFile": "maps/minimap.png"
             "pattern": "simple"
             "sprite": simple
+            "ed": @parent.eventManager
         @camera = new Camera 
             "projection": "normal"
             "vpWidth": @parent.params.width

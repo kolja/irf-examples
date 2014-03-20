@@ -32,9 +32,10 @@ class SceneMaze extends Scene
                 "dd000000": 17
 
         @background = new Map
-            "mapfile": "maps/maze.png"
+            "mapFile": "maps/maze.png"
             "pattern": "cross"
             "sprite": maze
+            "ed": @parent.eventManager
 
     update: (delta) ->
         @ufo.update(delta, @background)

@@ -33,18 +33,21 @@ class SceneJumpNRun extends Scene
 
         # this whole function can actually be replaced by the string "simple"
         # you can, however use it to override the Maps standard Mapfile interpretation mechanism.
-        customReadFunction = ->
-            for row in [0..@map.height-1]
-                for col in [0..@map.width-1]
-                    type = "#{@mapData[row][col][0]}"
-                    green = parseInt( @mapData[row][col][1], 16 )
-                    z = parseInt( @mapData[row][col][2], 16 )
-                    @tiles.push( new Tile( @sprite, type, row, col, green, z ))
+        customReadFunction = (mapData, sprite) ->
+            tiles = []
+            for row in [0..mapData.height-1]
+                for col in [0..mapData.width-1]
+                    type = "#{mapData[row][col][0]}"
+                    green = parseInt( mapData[row][col][1], 16 )
+                    z = parseInt( mapData[row][col][2], 16 )
+                    tiles.push( new Tile( sprite, type, row, col, green, z ))
+            return tiles
 
         @background = new Map
-            "mapfile": "/maps/jumpnrun_map.png"
+            "mapFile": "/maps/jumpnrun_map.png"
             "pattern": customReadFunction
             "sprite": jumpnrunSprite
+            "ed": @parent.eventManager
 
         @spaceships = []
         for i in [0..3]
