@@ -13,7 +13,7 @@ class Asteroids extends Game
         @eventManager = new EventManager
         @keyboard = new Keyboard
 
-        @sceneManager.setScene "SceneJumpNRun", this
+        @sceneManager.setScene "SceneHexagon", this
 
     update: (delta) ->
         super(delta)

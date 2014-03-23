@@ -190,7 +190,7 @@ Asteroids = (function(_super) {
     Asteroids.__super__.constructor.call(this, params);
     this.eventManager = new EventManager;
     this.keyboard = new Keyboard;
-    this.sceneManager.setScene("SceneJumpNRun", this);
+    this.sceneManager.setScene("SceneHexagon", this);
   }
 
   Asteroids.prototype.update = function(delta) {
@@ -359,9 +359,9 @@ SceneHexagon = (function(_super) {
     var hexagon;
     this.parent = parent;
     this.camera = new Camera({
-      "projection": "normal",
-      "vpWidth": this.parent.params.width,
-      "vpHeight": this.parent.params.height
+      projection: "normal",
+      vpWidth: this.parent.params.width,
+      vpHeight: this.parent.params.height
     });
     this.ufo = new Ufo(this.parent.keyboard);
     hexagon = new Sprite({
@@ -371,13 +371,29 @@ SceneHexagon = (function(_super) {
       "innerWidth": 53,
       "innerHeight": 45,
       "key": {
-        "00": 0,
-        "bb": 1,
-        "ee": 2
+        A: 0,
+        B: 1,
+        C: 2
       }
     });
     this.background = new Map({
-      mapFile: "/maps/hexmap.png",
+      mapFile: {
+        width: 12,
+        height: 12,
+        0: [["A"], ["A"], ["A"], ["A"], ["A"], ["A"], ["A"], ["A"], ["A"], ["A"], ["A"], ["A"]],
+        1: [["A"], ["B"], ["A"], ["A"], ["A"], ["A"], ["A"], ["A"], ["A"], ["A"], ["A"], ["A"]],
+        2: [["A"], ["B"], ["A"], ["A"], ["A"], ["A"], ["A"], ["A"], ["A"], ["A"], ["A"], ["A"]],
+        3: [["A"], ["B"], ["B"], ["A"], ["A"], ["A"], ["C"], ["A"], ["A"], ["A"], ["A"], ["A"]],
+        4: [["A"], ["A"], ["B"], ["A"], ["A"], ["A"], ["C"], ["C"], ["A"], ["A"], ["A"], ["A"]],
+        5: [["A"], ["A"], ["B"], ["A"], ["B"], ["A"], ["A"], ["A"], ["A"], ["A"], ["A"], ["A"]],
+        6: [["A"], ["A"], ["B"], ["B"], ["A"], ["B"], ["A"], ["A"], ["A"], ["A"], ["A"], ["A"]],
+        7: [["A"], ["C"], ["A"], ["A"], ["A"], ["B"], ["A"], ["C"], ["A"], ["A"], ["A"], ["A"]],
+        8: [["C"], ["C"], ["A"], ["A"], ["B"], ["B"], ["A"], ["A"], ["B"], ["B"], ["A"], ["A"]],
+        9: [["C"], ["A"], ["A"], ["A"], ["B"], ["A"], ["A"], ["B"], ["A"], ["B"], ["A"], ["A"]],
+        10: [["A"], ["A"], ["A"], ["A"], ["B"], ["B"], ["B"], ["A"], ["A"], ["B"], ["B"], ["A"]],
+        11: [["A"], ["A"], ["A"], ["A"], ["A"], ["A"], ["A"], ["A"], ["A"], ["A"], ["B"], ["A"]]
+      },
+      read: "literal",
       pattern: "simple",
       tilePlacement: "hexagon",
       sprite: hexagon,
