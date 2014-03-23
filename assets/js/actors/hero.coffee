@@ -33,7 +33,7 @@ class Hero
         tileBelow = map.tileAtVector(@coor)?.neighbor["s"]
         @speed.add_ @gravity
 
-        if @bb.intersect(tileBelow?.bb) and not tileBelow?.isWalkable()
+        if @bb.intersect(tileBelow?.bb) and not tileBelow?.isWalkable
             @speed.y = 0
             @state = "normal"
 

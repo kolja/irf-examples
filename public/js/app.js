@@ -32,7 +32,7 @@ Hero = (function() {
     var tileBelow, _ref1;
     tileBelow = (_ref1 = map.tileAtVector(this.coor)) != null ? _ref1.neighbor["s"] : void 0;
     this.speed.add_(this.gravity);
-    if (this.bb.intersect(tileBelow != null ? tileBelow.bb : void 0) && !(tileBelow != null ? tileBelow.isWalkable() : void 0)) {
+    if (this.bb.intersect(tileBelow != null ? tileBelow.bb : void 0) && !(tileBelow != null ? tileBelow.isWalkable : void 0)) {
       this.speed.y = 0;
       this.state = "normal";
     }
@@ -230,8 +230,10 @@ Asteroids.addScene(require('./scenes/jumpnrun.coffee'));
 
 Asteroids.addScene(require('./scenes/maze.coffee'));
 
+Asteroids.addScene(require('./scenes/hexagon.coffee'));
 
-},{"./scenes/bigbackground.coffee":5,"./scenes/height.coffee":6,"./scenes/iso.coffee":7,"./scenes/jumpnrun.coffee":8,"./scenes/maze.coffee":9}],5:[function(require,module,exports){
+
+},{"./scenes/bigbackground.coffee":5,"./scenes/height.coffee":6,"./scenes/hexagon.coffee":7,"./scenes/iso.coffee":8,"./scenes/jumpnrun.coffee":9,"./scenes/maze.coffee":10}],5:[function(require,module,exports){
 var Background, Scene, SceneBigBackground, SceneManager, Spaceship, Sprite, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -342,6 +344,68 @@ module.exports = SceneHeight;
 
 
 },{}],7:[function(require,module,exports){
+var Camera, Map, Scene, SceneHexagon, Sprite, Ufo, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+_ref = require('irf'), Scene = _ref.Scene, Camera = _ref.Camera, Sprite = _ref.Sprite, Map = _ref.Map;
+
+Ufo = require('../actors/ufo.coffee');
+
+SceneHexagon = (function(_super) {
+  __extends(SceneHexagon, _super);
+
+  function SceneHexagon(parent) {
+    var hexagon;
+    this.parent = parent;
+    this.camera = new Camera({
+      "projection": "normal",
+      "vpWidth": this.parent.params.width,
+      "vpHeight": this.parent.params.height
+    });
+    this.ufo = new Ufo(this.parent.keyboard);
+    hexagon = new Sprite({
+      "texture": "images/hexagon.png",
+      "width": 100,
+      "height": 100,
+      "innerWidth": 53,
+      "innerHeight": 45,
+      "key": {
+        "00": 0,
+        "bb": 1,
+        "ee": 2
+      }
+    });
+    this.background = new Map({
+      mapFile: "/maps/hexmap.png",
+      pattern: "simple",
+      tilePlacement: "hexagon",
+      sprite: hexagon,
+      ed: this.parent.eventManager
+    });
+  }
+
+  SceneHexagon.prototype.update = function(delta) {
+    this.ufo.update(delta, this.background);
+    return this.camera.coor = this.ufo.coor;
+  };
+
+  SceneHexagon.prototype.render = function(ctx) {
+    var _this = this;
+    return this.camera.apply(ctx, function() {
+      _this.background.render(ctx, _this.camera);
+      return _this.ufo.render(ctx);
+    });
+  };
+
+  return SceneHexagon;
+
+})(Scene);
+
+module.exports = SceneHexagon;
+
+
+},{"../actors/ufo.coffee":3}],8:[function(require,module,exports){
 var Camera, Map, Scene, SceneIso, Sprite, Ufo, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -415,7 +479,7 @@ SceneIso = (function(_super) {
 module.exports = SceneIso;
 
 
-},{"../actors/ufo.coffee":3}],8:[function(require,module,exports){
+},{"../actors/ufo.coffee":3}],9:[function(require,module,exports){
 var Camera, Hero, Map, Scene, SceneJumpNRun, Spaceship, Sprite, Tile, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -430,7 +494,8 @@ SceneJumpNRun = (function(_super) {
   __extends(SceneJumpNRun, _super);
 
   function SceneJumpNRun(parent) {
-    var customReadFunction, i, jumpnrunSprite, _i;
+    var customReadFunction, i, jumpnrunSprite, _i,
+      _this = this;
     this.parent = parent;
     this.hero = new Hero(this.parent.eventManager, this.parent.keyboard);
     this.camera = new Camera({
@@ -460,23 +525,30 @@ SceneJumpNRun = (function(_super) {
       }
     });
     customReadFunction = function(mapData, sprite) {
-      var col, green, row, tiles, type, z, _i, _j, _ref1, _ref2;
+      var col, row, tiles, _i, _j, _ref1, _ref2;
       tiles = [];
       for (row = _i = 0, _ref1 = mapData.height - 1; 0 <= _ref1 ? _i <= _ref1 : _i >= _ref1; row = 0 <= _ref1 ? ++_i : --_i) {
         for (col = _j = 0, _ref2 = mapData.width - 1; 0 <= _ref2 ? _j <= _ref2 : _j >= _ref2; col = 0 <= _ref2 ? ++_j : --_j) {
-          type = "" + mapData[row][col][0];
-          green = parseInt(mapData[row][col][1], 16);
-          z = parseInt(mapData[row][col][2], 16);
-          tiles.push(new Tile(sprite, type, row, col, green, z));
+          tiles.push(new Tile({
+            sprite: sprite,
+            data: {
+              col: col,
+              row: row,
+              type: "" + mapData[row][col][0],
+              walkable: parseInt(mapData[row][col][1], 16),
+              z: parseInt(mapData[row][col][2], 16)
+            },
+            map: _this.background
+          }));
         }
       }
       return tiles;
     };
     this.background = new Map({
-      "mapFile": "/maps/jumpnrun_map.png",
-      "pattern": customReadFunction,
-      "sprite": jumpnrunSprite,
-      "ed": this.parent.eventManager
+      mapFile: "/maps/jumpnrun_map.png",
+      pattern: customReadFunction,
+      sprite: jumpnrunSprite,
+      ed: this.parent.eventManager
     });
     this.spaceships = [];
     for (i = _i = 0; _i <= 3; i = ++_i) {
@@ -520,7 +592,7 @@ SceneJumpNRun = (function(_super) {
 module.exports = SceneJumpNRun;
 
 
-},{"../actors/hero.coffee":1,"../actors/spaceship.coffee":2}],9:[function(require,module,exports){
+},{"../actors/hero.coffee":1,"../actors/spaceship.coffee":2}],10:[function(require,module,exports){
 var Camera, Map, Scene, SceneMaze, Sprite, Ufo, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };

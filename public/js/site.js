@@ -70,75 +70,6 @@ module.exports = BoundingBox;
 
 
 },{"./vector.coffee":21}],2:[function(_dereq_,module,exports){
-var BoundingBox, Vector;
-
-Vector = _dereq_('./vector.coffee');
-
-BoundingBox = (function() {
-  function BoundingBox(coor, dim, color) {
-    this.coor = coor;
-    this.dim = dim;
-    this.color = color != null ? color : "grey";
-    if (this.coor == null) {
-      this.coor = new Vector;
-    }
-    if (this.dim == null) {
-      this.dim = new Vector;
-    }
-  }
-
-  BoundingBox.prototype.intersect = function(otherBB) {
-    if (otherBB == null) {
-      return false;
-    }
-    return this.intersectv(otherBB) && this.intersecth(otherBB);
-  };
-
-  BoundingBox.prototype.intersectv = function(otherBB) {
-    if (this.coor.y < otherBB.coor.y) {
-      if (((this.dim.y + otherBB.dim.y) / 2) < (otherBB.coor.y - this.coor.y)) {
-        return false;
-      } else {
-        return true;
-      }
-    } else {
-      if (((this.dim.y + otherBB.dim.y) / 2) < (this.coor.y - otherBB.coor.y)) {
-        return false;
-      } else {
-        return true;
-      }
-    }
-  };
-
-  BoundingBox.prototype.intersecth = function(otherBB) {
-    if (this.coor.x < otherBB.coor.x) {
-      if (((this.dim.x + otherBB.dim.x) / 2) < (otherBB.coor.x - this.coor.x)) {
-        return false;
-      } else {
-        return true;
-      }
-    } else {
-      if (((this.dim.x + otherBB.dim.x) / 2) < (this.coor.x - otherBB.coor.x)) {
-        return false;
-      } else {
-        return true;
-      }
-    }
-  };
-
-  BoundingBox.prototype.render = function(ctx) {
-    ctx.strokeStyle = this.color;
-    return ctx.strokeRect(this.coor.x - this.dim.x / 2, this.coor.y - this.dim.y / 2, this.dim.x, this.dim.y);
-  };
-
-  return BoundingBox;
-
-})();
-
-module.exports = BoundingBox;
-
-
-},{"./vector.coffee":21}],3:[function(_dereq_,module,exports){
 var Camera, Vector;
 
 Vector = _dereq_('./vector.coffee');
@@ -179,7 +110,7 @@ Camera = (function() {
 module.exports = Camera;
 
 
-},{"./vector.coffee":21}],4:[function(_dereq_,module,exports){
+},{"./vector.coffee":21}],3:[function(_dereq_,module,exports){
 var EventManager;
 
 EventManager = (function() {
@@ -213,7 +144,7 @@ EventManager = (function() {
 module.exports = EventManager;
 
 
-},{}],5:[function(_dereq_,module,exports){
+},{}],4:[function(_dereq_,module,exports){
 var Game, Helpers, SceneManager,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -278,7 +209,7 @@ Game = (function() {
 module.exports = Game;
 
 
-},{"./helpers.coffee":6,"./scenemanager.coffee":15}],6:[function(_dereq_,module,exports){
+},{"./helpers.coffee":5,"./scenemanager.coffee":15}],5:[function(_dereq_,module,exports){
 var Helpers;
 
 Array.prototype.shuffle = function() {
@@ -318,7 +249,7 @@ Helpers = (function() {
 module.exports = Helpers;
 
 
-},{}],7:[function(_dereq_,module,exports){
+},{}],6:[function(_dereq_,module,exports){
 module.exports = {
   Animation: _dereq_('./sprite/animation.coffee'),
   Background: _dereq_('./sprite/background.coffee'),
@@ -339,7 +270,7 @@ module.exports = {
 };
 
 
-},{"./boundingbox.coffee":2,"./camera.coffee":3,"./eventmanager.coffee":4,"./game.coffee":5,"./helpers.coffee":6,"./keyboard.coffee":8,"./map/map.coffee":10,"./map/tile.coffee":13,"./scene.coffee":14,"./scenemanager.coffee":15,"./sprite/animation.coffee":16,"./sprite/background.coffee":17,"./sprite/shape.coffee":18,"./sprite/sprite.coffee":19,"./timer.coffee":20,"./vector.coffee":21}],8:[function(_dereq_,module,exports){
+},{"./boundingbox.coffee":1,"./camera.coffee":2,"./eventmanager.coffee":3,"./game.coffee":4,"./helpers.coffee":5,"./keyboard.coffee":7,"./map/map.coffee":9,"./map/tile.coffee":13,"./scene.coffee":14,"./scenemanager.coffee":15,"./sprite/animation.coffee":16,"./sprite/background.coffee":17,"./sprite/shape.coffee":18,"./sprite/sprite.coffee":19,"./timer.coffee":20,"./vector.coffee":21}],7:[function(_dereq_,module,exports){
 var Keyboard;
 
 Keyboard = (function() {
@@ -428,7 +359,7 @@ Keyboard = (function() {
 module.exports = Keyboard;
 
 
-},{}],9:[function(_dereq_,module,exports){
+},{}],8:[function(_dereq_,module,exports){
 var DataSource;
 
 DataSource = (function() {
@@ -488,8 +419,11 @@ DataSource = (function() {
   };
 
   DataSource.prototype.readLiteral = function() {
+    var _this = this;
     this.mapData = this.file;
-    return this.callback(this.mapData);
+    return setTimeout(function() {
+      return _this.callback(_this.mapData);
+    }, 100);
   };
 
   return DataSource;
@@ -499,8 +433,8 @@ DataSource = (function() {
 module.exports = DataSource;
 
 
-},{}],10:[function(_dereq_,module,exports){
-var DataSource, Map, MovementRules, ReadStrategy,
+},{}],9:[function(_dereq_,module,exports){
+var DataSource, Map, MovementRules, PlacementStrategy, ReadStrategy,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 DataSource = _dereq_('./datasource.coffee');
@@ -509,9 +443,11 @@ ReadStrategy = _dereq_('./readstrategy.coffee');
 
 MovementRules = _dereq_('./movementrules.coffee');
 
+PlacementStrategy = _dereq_('./placementstrategy.coffee');
+
 Map = (function() {
   function Map(_arg) {
-    this.sprite = _arg.sprite, this.read = _arg.read, this.pattern = _arg.pattern, this.movement = _arg.movement, this.mapFile = _arg.mapFile, this.ed = _arg.ed;
+    this.sprite = _arg.sprite, this.read = _arg.read, this.pattern = _arg.pattern, this.movement = _arg.movement, this.tilePlacement = _arg.tilePlacement, this.mapFile = _arg.mapFile, this.ed = _arg.ed;
     this.parseToTiles = __bind(this.parseToTiles, this);
     if (this.read == null) {
       this.read = "image";
@@ -522,6 +458,9 @@ Map = (function() {
     if (this.movement == null) {
       this.movement = "northSouthEastWest";
     }
+    if (this.tilePlacement == null) {
+      this.tilePlacement = "grid";
+    }
     this.width = 0;
     this.height = 0;
     this.rd = null;
@@ -530,12 +469,13 @@ Map = (function() {
       file: this.mapFile,
       callback: this.parseToTiles
     }).read();
+    this.tilePlacementStrategy = new PlacementStrategy(this.tilePlacement, this);
   }
 
   Map.prototype.parseToTiles = function(mapData) {
     var _ref;
     this.width = mapData.width, this.height = mapData.height;
-    this.tiles = (new ReadStrategy(this.pattern)).read(mapData, this.sprite);
+    this.tiles = (new ReadStrategy(this.pattern, this)).read(mapData, this.sprite);
     (new MovementRules(this.movement)).applyRules(this);
     return (_ref = this.ed) != null ? _ref.trigger("map.finishedLoading") : void 0;
   };
@@ -548,11 +488,7 @@ Map = (function() {
   };
 
   Map.prototype.tileAtVector = function(vec) {
-    var index, x, y;
-    x = Math.floor(vec.x / this.sprite.innerWidth);
-    y = Math.floor(vec.y / this.sprite.innerHeight);
-    index = y * this.width + x;
-    return this.tiles[index];
+    return this.tiles[this.tilePlacementStrategy.tileIndex(vec)];
   };
 
   Map.prototype.render = function(ctx, camera) {
@@ -561,11 +497,7 @@ Map = (function() {
     _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       tile = _ref[_i];
-      if (tile.squaredDistanceTo(camera.coor) < this.renderDistance(camera)) {
-        _results.push(tile.render(ctx));
-      } else {
-        _results.push(void 0);
-      }
+      _results.push(tile.render(ctx));
     }
     return _results;
   };
@@ -577,7 +509,7 @@ Map = (function() {
 module.exports = Map;
 
 
-},{"./datasource.coffee":9,"./movementrules.coffee":11,"./readstrategy.coffee":12}],11:[function(_dereq_,module,exports){
+},{"./datasource.coffee":8,"./movementrules.coffee":10,"./placementstrategy.coffee":11,"./readstrategy.coffee":12}],10:[function(_dereq_,module,exports){
 var MovementRules;
 
 MovementRules = (function() {
@@ -621,14 +553,71 @@ MovementRules = (function() {
 module.exports = MovementRules;
 
 
-},{}],12:[function(_dereq_,module,exports){
+},{}],11:[function(_dereq_,module,exports){
+var PlacementStrategy, Vector,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+Vector = _dereq_("../vector.coffee");
+
+PlacementStrategy = (function() {
+  function PlacementStrategy(strategy, map) {
+    this.strategy = strategy;
+    this.map = map;
+    this.coorHex = __bind(this.coorHex, this);
+    this.coorGrid = __bind(this.coorGrid, this);
+    this.tileIndexGrid = __bind(this.tileIndexGrid, this);
+    this.tileIndex = this.tileIndexGrid;
+    if (typeof this.strategy === "function") {
+      this.coor = this.strategy;
+    } else {
+      switch (this.strategy) {
+        case "hexagon":
+          this.coor = this.coorHex;
+          break;
+        default:
+          this.coor = this.coorGrid;
+      }
+    }
+  }
+
+  PlacementStrategy.prototype.tileIndexGrid = function(vec) {
+    var x, y;
+    x = Math.floor(vec.x / this.map.sprite.innerWidth);
+    y = Math.floor(vec.y / this.map.sprite.innerHeight);
+    return y * this.map.width + x;
+  };
+
+  PlacementStrategy.prototype.coorGrid = function(data) {
+    var x, y;
+    x = data.col * this.map.sprite.innerWidth + this.map.sprite.innerWidth / 2 - (data.z || 0);
+    y = data.row * this.map.sprite.innerHeight + this.map.sprite.innerHeight / 2 - (data.z || 0);
+    return new Vector(x, y);
+  };
+
+  PlacementStrategy.prototype.coorHex = function(data) {
+    var x, xOffset, y;
+    xOffset = data.row % 2 === 0 ? this.map.sprite.innerWidth / 2 : 0;
+    x = data.col * this.map.sprite.innerWidth + this.map.sprite.innerWidth / 2 - xOffset;
+    y = data.row * this.map.sprite.innerHeight + this.map.sprite.innerHeight / 2;
+    return new Vector(x, y);
+  };
+
+  return PlacementStrategy;
+
+})();
+
+module.exports = PlacementStrategy;
+
+
+},{"../vector.coffee":21}],12:[function(_dereq_,module,exports){
 var ReadStrategy, Tile;
 
 Tile = _dereq_("./tile.coffee");
 
 ReadStrategy = (function() {
-  function ReadStrategy(pattern) {
+  function ReadStrategy(pattern, map) {
     this.pattern = pattern;
+    this.map = map;
     if (typeof this.pattern === "function") {
       this.read = this.pattern;
     } else {
@@ -646,43 +635,64 @@ ReadStrategy = (function() {
   }
 
   ReadStrategy.prototype.readSimple = function(mapData, sprite) {
-    var col, green, row, tiles, type, z, _i, _j, _ref, _ref1;
+    var col, row, tiles, _i, _j, _ref, _ref1;
     tiles = [];
     for (row = _i = 0, _ref = mapData.height - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; row = 0 <= _ref ? ++_i : --_i) {
       for (col = _j = 0, _ref1 = mapData.width - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; col = 0 <= _ref1 ? ++_j : --_j) {
-        type = "" + mapData[row][col][0];
-        green = parseInt(mapData[row][col][1], 16);
-        z = parseInt(mapData[row][col][2], 16);
-        tiles.push(new Tile(sprite, type, row, col, green, z));
+        tiles.push(new Tile({
+          sprite: sprite,
+          data: {
+            col: col,
+            row: row,
+            type: "" + mapData[row][col][0],
+            walkable: parseInt(mapData[row][col][1], 16),
+            z: parseInt(mapData[row][col][2], 16)
+          },
+          map: this.map
+        }));
       }
     }
     return tiles;
   };
 
   ReadStrategy.prototype.readSquare = function(mapData, sprite) {
-    var col, green, row, tiles, type, z, _i, _j, _ref, _ref1;
+    var col, row, tiles, _i, _j, _ref, _ref1;
     tiles = [];
     for (row = _i = 0, _ref = mapData.height - 2; 0 <= _ref ? _i <= _ref : _i >= _ref; row = 0 <= _ref ? ++_i : --_i) {
       for (col = _j = 0, _ref1 = mapData.width - 2; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; col = 0 <= _ref1 ? ++_j : --_j) {
-        type = "" + mapData[row][col][0] + mapData[row][col + 1][0] + mapData[row + 1][col][0] + mapData[row + 1][col + 1][0];
-        green = parseInt(mapData[row][col][1], 16);
-        z = parseInt(mapData[row][col][2], 16);
-        tiles.push(new Tile(sprite, type, row, col, green, z));
+        tiles.push(new Tile({
+          sprite: sprite,
+          data: {
+            col: col,
+            row: row,
+            type: "" + mapData[row][col][0] + mapData[row][col + 1][0] + mapData[row + 1][col][0] + mapData[row + 1][col + 1][0],
+            walkable: parseInt(mapData[row][col][1], 16),
+            z: parseInt(mapData[row][col][2], 16)
+          },
+          map: this.map
+        }));
       }
     }
     return tiles;
   };
 
   ReadStrategy.prototype.readCross = function(mapData, sprite) {
-    var col, green, row, tiles, type, z, _i, _j, _ref, _ref1;
+    var col, row, tiles, _i, _j, _ref, _ref1;
     tiles = [];
     for (row = _i = 1, _ref = mapData.height - 2; _i <= _ref; row = _i += 2) {
       for (col = _j = 1, _ref1 = mapData.width - 2; _j <= _ref1; col = _j += 2) {
         if (mapData[row][col][0] !== "00") {
-          type = "" + mapData[row - 1][col][0] + mapData[row][col + 1][0] + mapData[row + 1][col][0] + mapData[row][col - 1][0];
-          green = parseInt(mapData[row][col][1], 16);
-          z = parseInt(mapData[row][col][2], 16);
-          tiles.push(new Tile(sprite, type, row / 2, col / 2, green, z));
+          tiles.push(new Tile({
+            sprite: sprite,
+            data: {
+              col: col,
+              row: row,
+              type: "" + mapData[row - 1][col][0] + mapData[row][col + 1][0] + mapData[row + 1][col][0] + mapData[row][col - 1][0],
+              walkable: parseInt(mapData[row][col][1], 16),
+              z: parseInt(mapData[row][col][2], 16)
+            },
+            map: this.map
+          }));
         }
       }
     }
@@ -697,38 +707,30 @@ module.exports = ReadStrategy;
 
 
 },{"./tile.coffee":13}],13:[function(_dereq_,module,exports){
-var BoundingBox, Tile, Vector;
+var BoundingBox, Tile, Vector,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-BoundingBox = _dereq_('../boundingBox.coffee');
+BoundingBox = _dereq_('../boundingbox.coffee');
 
 Vector = _dereq_('../vector.coffee');
 
 Tile = (function() {
-  function Tile(sprite, type, row, col, green, z) {
-    this.sprite = sprite;
-    this.type = type;
-    this.row = row;
-    this.col = col;
-    this.green = green != null ? green : 0;
-    this.z = z != null ? z : 0;
+  function Tile(_arg) {
+    var _ref;
+    this.sprite = _arg.sprite, this.data = _arg.data, this.map = _arg.map;
+    this.render = __bind(this.render, this);
     this.neighbor = [];
-    this.x = this.col * this.sprite.innerWidth + this.sprite.innerWidth / 2;
-    this.y = this.row * this.sprite.innerHeight + this.sprite.innerHeight / 2;
+    _ref = this.map.tilePlacementStrategy.coor(this.data), this.x = _ref.x, this.y = _ref.y;
     this.bb = new BoundingBox(new Vector(this.x, this.y), new Vector(this.sprite.innerWidth, this.sprite.innerHeight));
+    if (!(this.data.walkable > 0)) {
+      this.isWalkable = true;
+    }
   }
-
-  Tile.prototype.isWalkable = function() {
-    return this.green === 0;
-  };
-
-  Tile.prototype.squaredDistanceTo = function(vec) {
-    return vec.subtract(new Vector(this.x, this.y)).lengthSquared();
-  };
 
   Tile.prototype.render = function(ctx) {
     ctx.save();
-    ctx.translate(this.x - this.z, this.y - this.z);
-    this.sprite.render(this.type, ctx);
+    ctx.translate(this.x, this.y);
+    this.sprite.render(this.data.type, ctx);
     return ctx.restore();
   };
 
@@ -739,7 +741,7 @@ Tile = (function() {
 module.exports = Tile;
 
 
-},{"../boundingBox.coffee":1,"../vector.coffee":21}],14:[function(_dereq_,module,exports){
+},{"../boundingbox.coffee":1,"../vector.coffee":21}],14:[function(_dereq_,module,exports){
 var Scene;
 
 Scene = (function() {
@@ -1121,9 +1123,9 @@ Vector = (function() {
 module.exports = Vector;
 
 
-},{}]},{},[7])
+},{}]},{},[6])
 
-(7)
+(6)
 });
 
 ; browserify_shim__define__module__export__(typeof irf != "undefined" ? irf : window.irf);
@@ -10964,7 +10966,7 @@ Hero = (function() {
     var tileBelow, _ref1;
     tileBelow = (_ref1 = map.tileAtVector(this.coor)) != null ? _ref1.neighbor["s"] : void 0;
     this.speed.add_(this.gravity);
-    if (this.bb.intersect(tileBelow != null ? tileBelow.bb : void 0) && !(tileBelow != null ? tileBelow.isWalkable() : void 0)) {
+    if (this.bb.intersect(tileBelow != null ? tileBelow.bb : void 0) && !(tileBelow != null ? tileBelow.isWalkable : void 0)) {
       this.speed.y = 0;
       this.state = "normal";
     }
@@ -11162,8 +11164,10 @@ Asteroids.addScene(require('./scenes/jumpnrun.coffee'));
 
 Asteroids.addScene(require('./scenes/maze.coffee'));
 
+Asteroids.addScene(require('./scenes/hexagon.coffee'));
 
-},{"./scenes/bigbackground.coffee":5,"./scenes/height.coffee":6,"./scenes/iso.coffee":7,"./scenes/jumpnrun.coffee":8,"./scenes/maze.coffee":9}],5:[function(require,module,exports){
+
+},{"./scenes/bigbackground.coffee":5,"./scenes/height.coffee":6,"./scenes/hexagon.coffee":7,"./scenes/iso.coffee":8,"./scenes/jumpnrun.coffee":9,"./scenes/maze.coffee":10}],5:[function(require,module,exports){
 var Background, Scene, SceneBigBackground, SceneManager, Spaceship, Sprite, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -11274,6 +11278,68 @@ module.exports = SceneHeight;
 
 
 },{}],7:[function(require,module,exports){
+var Camera, Map, Scene, SceneHexagon, Sprite, Ufo, _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+_ref = require('irf'), Scene = _ref.Scene, Camera = _ref.Camera, Sprite = _ref.Sprite, Map = _ref.Map;
+
+Ufo = require('../actors/ufo.coffee');
+
+SceneHexagon = (function(_super) {
+  __extends(SceneHexagon, _super);
+
+  function SceneHexagon(parent) {
+    var hexagon;
+    this.parent = parent;
+    this.camera = new Camera({
+      "projection": "normal",
+      "vpWidth": this.parent.params.width,
+      "vpHeight": this.parent.params.height
+    });
+    this.ufo = new Ufo(this.parent.keyboard);
+    hexagon = new Sprite({
+      "texture": "images/hexagon.png",
+      "width": 100,
+      "height": 100,
+      "innerWidth": 53,
+      "innerHeight": 45,
+      "key": {
+        "00": 0,
+        "bb": 1,
+        "ee": 2
+      }
+    });
+    this.background = new Map({
+      mapFile: "/maps/hexmap.png",
+      pattern: "simple",
+      tilePlacement: "hexagon",
+      sprite: hexagon,
+      ed: this.parent.eventManager
+    });
+  }
+
+  SceneHexagon.prototype.update = function(delta) {
+    this.ufo.update(delta, this.background);
+    return this.camera.coor = this.ufo.coor;
+  };
+
+  SceneHexagon.prototype.render = function(ctx) {
+    var _this = this;
+    return this.camera.apply(ctx, function() {
+      _this.background.render(ctx, _this.camera);
+      return _this.ufo.render(ctx);
+    });
+  };
+
+  return SceneHexagon;
+
+})(Scene);
+
+module.exports = SceneHexagon;
+
+
+},{"../actors/ufo.coffee":3}],8:[function(require,module,exports){
 var Camera, Map, Scene, SceneIso, Sprite, Ufo, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -11347,7 +11413,7 @@ SceneIso = (function(_super) {
 module.exports = SceneIso;
 
 
-},{"../actors/ufo.coffee":3}],8:[function(require,module,exports){
+},{"../actors/ufo.coffee":3}],9:[function(require,module,exports){
 var Camera, Hero, Map, Scene, SceneJumpNRun, Spaceship, Sprite, Tile, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -11362,7 +11428,8 @@ SceneJumpNRun = (function(_super) {
   __extends(SceneJumpNRun, _super);
 
   function SceneJumpNRun(parent) {
-    var customReadFunction, i, jumpnrunSprite, _i;
+    var customReadFunction, i, jumpnrunSprite, _i,
+      _this = this;
     this.parent = parent;
     this.hero = new Hero(this.parent.eventManager, this.parent.keyboard);
     this.camera = new Camera({
@@ -11392,23 +11459,30 @@ SceneJumpNRun = (function(_super) {
       }
     });
     customReadFunction = function(mapData, sprite) {
-      var col, green, row, tiles, type, z, _i, _j, _ref1, _ref2;
+      var col, row, tiles, _i, _j, _ref1, _ref2;
       tiles = [];
       for (row = _i = 0, _ref1 = mapData.height - 1; 0 <= _ref1 ? _i <= _ref1 : _i >= _ref1; row = 0 <= _ref1 ? ++_i : --_i) {
         for (col = _j = 0, _ref2 = mapData.width - 1; 0 <= _ref2 ? _j <= _ref2 : _j >= _ref2; col = 0 <= _ref2 ? ++_j : --_j) {
-          type = "" + mapData[row][col][0];
-          green = parseInt(mapData[row][col][1], 16);
-          z = parseInt(mapData[row][col][2], 16);
-          tiles.push(new Tile(sprite, type, row, col, green, z));
+          tiles.push(new Tile({
+            sprite: sprite,
+            data: {
+              col: col,
+              row: row,
+              type: "" + mapData[row][col][0],
+              walkable: parseInt(mapData[row][col][1], 16),
+              z: parseInt(mapData[row][col][2], 16)
+            },
+            map: _this.background
+          }));
         }
       }
       return tiles;
     };
     this.background = new Map({
-      "mapFile": "/maps/jumpnrun_map.png",
-      "pattern": customReadFunction,
-      "sprite": jumpnrunSprite,
-      "ed": this.parent.eventManager
+      mapFile: "/maps/jumpnrun_map.png",
+      pattern: customReadFunction,
+      sprite: jumpnrunSprite,
+      ed: this.parent.eventManager
     });
     this.spaceships = [];
     for (i = _i = 0; _i <= 3; i = ++_i) {
@@ -11452,7 +11526,7 @@ SceneJumpNRun = (function(_super) {
 module.exports = SceneJumpNRun;
 
 
-},{"../actors/hero.coffee":1,"../actors/spaceship.coffee":2}],9:[function(require,module,exports){
+},{"../actors/hero.coffee":1,"../actors/spaceship.coffee":2}],10:[function(require,module,exports){
 var Camera, Map, Scene, SceneMaze, Sprite, Ufo, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
